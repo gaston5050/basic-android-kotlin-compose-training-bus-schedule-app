@@ -17,13 +17,30 @@ package com.example.busschedule.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.busschedule.data.BusSchedule
+import com.example.busschedule.data.BusScheduleRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 
-class BusScheduleViewModel: ViewModel() {
+class BusScheduleViewModel(busScheduleRepository: BusScheduleRepository): ViewModel() {
+
+    val busScheduleUiState: StateFlow<BusScheduleUiState> =
+        busScheduleRepository.getAllItemsStream().map { BusScheduleUiState(it) }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = BusScheduleUiState()
+            )
+
+
+
 
     // Get example bus schedule
     fun getFullSchedule(): Flow<List<BusSchedule>> = flowOf(
@@ -49,9 +66,11 @@ class BusScheduleViewModel: ViewModel() {
 
     companion object {
         val factory : ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                BusScheduleViewModel()
-            }
+         /*   initializer {
+                //BusScheduleViewModel()
+            }*/
         }
     }
 }
+
+data class BusScheduleUiState( val busScheduleList: List<BusSchedule> = listOf())
