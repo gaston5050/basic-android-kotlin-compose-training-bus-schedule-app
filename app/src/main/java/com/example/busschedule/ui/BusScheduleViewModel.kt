@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
-class BusScheduleViewModel(busScheduleRepository: BusScheduleRepository): ViewModel() {
+class BusScheduleViewModel(private val busScheduleRepository: BusScheduleRepository): ViewModel() {
 
     val busScheduleUiState: StateFlow<BusScheduleUiState> =
         busScheduleRepository.getAllItemsStream().map { BusScheduleUiState(it) }
@@ -43,26 +43,9 @@ class BusScheduleViewModel(busScheduleRepository: BusScheduleRepository): ViewMo
 
 
     // Get example bus schedule
-    fun getFullSchedule(): Flow<List<BusSchedule>> = flowOf(
-        listOf(
-            BusSchedule(
-                1,
-                "Example Street",
-                0
-            )
-        )
-    )
+    fun getFullSchedule(): Flow<List<BusSchedule>> = busScheduleRepository.getAllItemsStream()
 
-    // Get example bus schedule by stop
-    fun getScheduleFor(stopName: String): Flow<List<BusSchedule>> = flowOf(
-        listOf(
-            BusSchedule(
-                1,
-                "Example Street",
-                0
-            )
-        )
-    )
+    fun getScheduleFor(id: Int):Flow<BusSchedule?> = busScheduleRepository.getItemStream(id)
 
     companion object {
         val factory : ViewModelProvider.Factory = viewModelFactory {

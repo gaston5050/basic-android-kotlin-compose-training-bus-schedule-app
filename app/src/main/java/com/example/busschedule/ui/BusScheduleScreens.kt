@@ -115,7 +115,7 @@ fun BusScheduleApp(
             ) { backStackEntry ->
                 val stopName = backStackEntry.arguments?.getString(busRouteArgument)
                     ?: error("busRouteArgument cannot be null")
-                val routeSchedule by viewModel.getScheduleFor(stopName).collectAsState(emptyList())
+                val routeSchedule by viewModel.getScheduleFor(id).collectAsState(emptyList())
                 RouteScheduleScreen(
                     stopName = stopName,
                     busSchedules = routeSchedule,
