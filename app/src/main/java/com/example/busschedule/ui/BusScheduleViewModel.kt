@@ -45,7 +45,7 @@ class BusScheduleViewModel(private val busScheduleRepository: BusScheduleReposit
     // Get example bus schedule
     fun getFullSchedule(): Flow<List<BusSchedule>> = busScheduleRepository.getAllItemsStream()
 
-    fun getScheduleFor(id: Int):Flow<BusSchedule?> = busScheduleRepository.getItemStream(id)
+    fun getScheduleFor(stopName: String):Flow<BusSchedule?> = busScheduleRepository.getItemStream(stopName)
 
     companion object {
         val factory : ViewModelProvider.Factory = viewModelFactory {

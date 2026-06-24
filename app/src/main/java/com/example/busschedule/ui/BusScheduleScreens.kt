@@ -52,6 +52,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -77,7 +78,8 @@ fun BusScheduleApp(
     val navController = rememberNavController()
     val fullScheduleTitle = stringResource(R.string.full_schedule)
     var topAppBarTitle by remember { mutableStateOf(fullScheduleTitle) }
-    val fullSchedule by viewModel.getFullSchedule().collectAsState(emptyList())
+    //val fullSchedule by viewModel.getFullSchedule().collectAsState(emptyList())
+    val uiState by viewModel.busScheduleUiState.collectAsStateWithLifecycle()
     val onBackHandler = {
         topAppBarTitle = fullScheduleTitle
         navController.navigateUp()
@@ -98,7 +100,7 @@ fun BusScheduleApp(
         ) {
             composable(BusScheduleScreens.FullSchedule.name) {
                 FullScheduleScreen(
-                    busSchedules = fullSchedule,
+                    busSchedules = uiState.busScheduleList,
                     contentPadding = innerPadding,
                     onScheduleClick = { busStopName ->
                         navController.navigate(
@@ -115,7 +117,7 @@ fun BusScheduleApp(
             ) { backStackEntry ->
                 val stopName = backStackEntry.arguments?.getString(busRouteArgument)
                     ?: error("busRouteArgument cannot be null")
-                val routeSchedule by viewModel.getScheduleFor(id).collectAsState(emptyList())
+                val routeSchedule by viewModel.getScheduleFor(stopName).collectAsState(emptyList())
                 RouteScheduleScreen(
                     stopName = stopName,
                     busSchedules = routeSchedule,

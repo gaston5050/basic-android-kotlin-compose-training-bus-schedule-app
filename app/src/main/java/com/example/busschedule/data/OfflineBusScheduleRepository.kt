@@ -7,7 +7,7 @@ class OfflineBusScheduleRepository( private val busScheduleDao: BusScheduleDao):
 
     override fun getAllItemsStream(): Flow<List<BusSchedule>> = busScheduleDao.getAllBusSchedule()
 
-    override fun getItemStream(id: Int): Flow<BusSchedule?> = busScheduleDao.getBusScheduleById(id)
+    override fun getItemStream(stopName: String): Flow<BusSchedule?> = busScheduleDao.getBusScheduleById(stopName)
 
 
 }

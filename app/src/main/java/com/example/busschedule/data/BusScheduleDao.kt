@@ -13,7 +13,7 @@ interface BusScheduleDao {
     fun getAllBusSchedule(): Flow<List<BusSchedule>>
 
 
-    @Query("SELECT * FROM bus_schedule WHERE ID = :id")
-    fun getBusScheduleById(id: Int): Flow<BusSchedule>
+    @Query("SELECT * FROM bus_schedule WHERE stop_name = :stopName ORDER BY id ASC")
+    fun getBusScheduleById(stopName: String): Flow<BusSchedule>
 
 }
