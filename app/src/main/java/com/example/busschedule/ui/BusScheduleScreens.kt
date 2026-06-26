@@ -62,9 +62,12 @@ import androidx.navigation.navArgument
 import com.example.busschedule.R
 import com.example.busschedule.data.BusSchedule
 import com.example.busschedule.ui.theme.BusScheduleTheme
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.runtime.getValue
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlin.collections.emptyList
 
 enum class BusScheduleScreens {
     FullSchedule,
@@ -117,10 +120,12 @@ fun BusScheduleApp(
             ) { backStackEntry ->
                 val stopName = backStackEntry.arguments?.getString(busRouteArgument)
                     ?: error("busRouteArgument cannot be null")
-                val routeSchedule by viewModel.getScheduleFor(stopName).collectAsState(emptyList())
+                val routeScheduleState = viewModel.getScheduleFor(stopName).collectAsState(initial = emptyList<BusSchedule>())
+
                 RouteScheduleScreen(
                     stopName = stopName,
-                    busSchedules = routeSchedule,
+                    // 2. 🔥 LE PASAMOS EL .value ACÁ ABAJO
+                    busSchedules = routeScheduleState.value as List<BusSchedule>,
                     contentPadding = innerPadding,
                     onBack = { onBackHandler() }
                 )
