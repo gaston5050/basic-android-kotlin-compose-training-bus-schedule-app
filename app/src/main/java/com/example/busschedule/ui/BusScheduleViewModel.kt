@@ -22,6 +22,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.busschedule.data.BusSchedule
 import com.example.busschedule.data.BusScheduleRepository
+import com.example.busschedule.data.OfflineBusScheduleRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -40,20 +41,23 @@ class BusScheduleViewModel(private val busScheduleRepository: BusScheduleReposit
             )
 
 
-
-
     // Get example bus schedule
     fun getFullSchedule(): Flow<List<BusSchedule>> = busScheduleRepository.getAllItemsStream()
 
-    fun getScheduleFor(stopName: String):Flow<BusSchedule?> = busScheduleRepository.getItemStream(stopName)
+    fun getScheduleFor(stopName: String): Flow<BusSchedule?> =
+        busScheduleRepository.getItemStream(stopName)
 
     companion object {
-        val factory : ViewModelProvider.Factory = viewModelFactory {
-         /*   initializer {
-                //BusScheduleViewModel()
-            }*/
+        val factory: ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                val application =
+                    (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as com.example.busschedule.BusScheduleApplication)
+                var repo = OfflineBusScheduleRepository(application.database.BusScheduleDao())
+
+                BusScheduleViewModel(repo)
+
+            }
         }
     }
 }
-
 data class BusScheduleUiState( val busScheduleList: List<BusSchedule> = listOf())
